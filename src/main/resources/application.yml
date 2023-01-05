@@ -1,1 +1,17 @@
-
+server:
+  port: 8081
+spring:
+  application:
+    name: word
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/word?useSSL=false&serverTimezone=UTC
+    username: root
+    password: mkj091700
+  jackson:
+    default-property-inclusion: non_null # JSON处理时忽略非空字段
+mybatis-plus:
+  type-aliases-package: com.word.entity # 别名扫描包
+logging:
+  level:
+    com.word: debug
