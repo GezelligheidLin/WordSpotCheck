@@ -161,8 +161,13 @@ public class EnglishWordController {
         }
     }
 
-    @GetMapping("/WordNotCheckedId/{NoOne},{NoTwo}")
-    public Result<EnglishWord> WordNotCheckedId(@PathVariable Integer NoOne,@PathVariable Integer NoTwo){
+    /**
+     * 随机抽查NoOne-NoTwo范围内未抽查的单词
+     * @RequestBody NoOne,NoTwo
+     * @return EnglishWord对象
+     */
+    @GetMapping("/spotCheckWord/{NoOne},{NoTwo}")
+    public Result<EnglishWord> spotCheckWord(@PathVariable Integer NoOne,@PathVariable Integer NoTwo){
         List<Integer> wordNotCheckedIds = englishWordService.WordNotCheckedId(NoOne,NoTwo);
         if(wordNotCheckedIds.isEmpty()){
             log.info("没有未抽查过的单词");
@@ -175,6 +180,22 @@ public class EnglishWordController {
             EnglishWord englishWord = englishWordService.selectWordById(wordNotCheckedId);
             log.info("成功抽查到了 {} 单词",englishWord.getWord());
             return Result.success(englishWord);
+        }
+    }
+
+    /**
+     * 查询NoOne-NoTwo范围内未抽查的单词
+     * @RequestBody NoOne,NoTwo
+     * @return EnglishWord对象集合
+     */
+    @GetMapping("/wordNotChecked/{NoOne},{NoTwo}")
+    public Result<List<EnglishWord>> wordNotChecked(@PathVariable Integer NoOne,@PathVariable Integer NoTwo){
+        List<EnglishWord> englishWords = englishWordService.wordNotChecked(NoOne,NoTwo);
+        if(englishWords.isEmpty()){
+            log.info("此范围内没有未抽查的单词");
+            return Result.fail("此范围内没有未抽查的单词");
+        }else {
+            return Result.success(englishWords);
         }
     }
 }
