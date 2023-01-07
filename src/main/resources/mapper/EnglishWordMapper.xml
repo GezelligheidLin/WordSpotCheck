@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.word.mapper.EnglishWordMapper">
+
+    <!-- 修改单词为正确 -->
+    <update id="modifyWordTrue">
+        update englishword
+        set isTrue = 1,trueCount=trueCount+1,isSpotChecked = 1
+        where id = #{id};
+    </update>
+
+    <!-- 修改单词为错误 -->
+    <update id="modifyWordError">
+        update englishword
+        set isTrue = -1,errorCount=errorCount+1,isSpotChecked = 1
+        where id = #{id};
+    </update>
+
+    <!-- 重置单词数据 -->
+    <update id="Reset">
+        update englishword
+        set isSpotChecked=0,isTrue=0,errorCount=0,trueCount=0,importance=0,isAllRight=0;
+    </update>
+
+    <!--  批量修改单词为正确  -->
+    <update id="modifyWordTrueByIds">
+        update englishword
+        set isTrue = 1,trueCount=trueCount+1,isSpotChecked = 1
+        where id in
+        <foreach collection="wordIds"
+                 item="item"
+                 index="index"
+                 open="(" close=")"
+                 separator=",">
+            #{item}
+        </foreach>
+    </update>
+
+    <!--  根据提供的id数组查找数据返回其中是否有已错误单词  -->
+    <select id="selectErrorWordByIds" resultType="com.word.entity.EnglishWord">
+        select *
+        from englishword where id in
+        <foreach collection="wordIds" item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+        and isTrue = -1;
+    </select>
+
+    <!-- 查询未被抽查的单词id -->
+    <select id="WordNotCheckedId" resultType="java.lang.Integer">
+        select id
+        from englishword where isSpotChecked = 0 and id between #{NoOne} and #{NoTwo};
+    </select>
+
+    <!-- 查询未被抽查的单词数据 -->
+    <select id="wordNotChecked" resultType="com.word.entity.EnglishWord">
+        select *
+        from englishword where isSpotChecked = 0 and id between #{NoOne} and #{NoTwo};
+    </select>
+
+    <!--  批量修改单词为错误  -->
+    <update id="modifyWordErrorByIds">
+        update englishword
+        set isTrue = -1,errorCount=errorCount+1,isSpotChecked = 1
+        where id in
+        <foreach collection="wordIds"
+                 item="item"
+                 index="index"
+                 open="(" close=")"
+                 separator=",">
+            #{item}
+        </foreach>
+    </update>
+</mapper>
